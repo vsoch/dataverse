@@ -194,7 +194,7 @@ public class FileDownloadHelper implements java.io.Serializable {
             file.getFileAccessRequesters().add((AuthenticatedUser) session.getUser());
             
             // create notifications
-            fileDownloadService.sendRequestFileAccessNotification(file.getOwner(), file.getId());           
+            //fileDownloadService.sendRequestFileAccessNotification(file.getOwner(), file.getId());           
         }
         
     }    

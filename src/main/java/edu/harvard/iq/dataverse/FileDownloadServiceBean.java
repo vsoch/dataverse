@@ -56,6 +56,7 @@ public class FileDownloadServiceBean implements java.io.Serializable {
     @EJB
     UserNotificationServiceBean userNotificationService;
     
+    
     @Inject
     DataverseSession session;
     
@@ -385,7 +386,8 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         DataFile file = datafileService.find(fileId);
         if (!file.getFileAccessRequesters().contains(session.getUser())) {
             try {
-                commandEngine.submit(new RequestAccessCommand(dvRequestService.getDataverseRequest(), file));                        
+                commandEngine.submit(new RequestAccessCommand(dvRequestService.getDataverseRequest(), file));
+                sendRequestFileAccessNotification(file.getOwner(), file.getId()); //I don't think this is suppose to be here but in the command, but its not working
                 return true;
             } catch (CommandException ex) {
                 logger.info("Unable to request access for file id " + fileId + ". Exception: " + ex);
