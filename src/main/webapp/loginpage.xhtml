@@ -5,12 +5,12 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:o="http://omnifaces.org/ui"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:jsf="http://xmlns.jcp.org/jsf">
-
+      xmlns:jsf="http://xmlns.jcp.org/jsf">    
     <h:head>
     </h:head>
 
     <h:body>
+
         <f:metadata>
             <f:viewParam name="redirectPage" value="#{LoginPage.redirectPage}"/>
             <f:viewAction action="#{LoginPage.init}"/>
@@ -86,7 +86,7 @@
                                     </div>
                                 </h:form>
                             </div>
-                            <div id="remoteProvider" jsf:rendered="#{LoginPage.authProvider.id == 'shib'}">
+                            <div id="remoteProvider" >
                                 <h:form>
                                     <p class="help-block">
                                         <span class="glyphicon glyphicon-info-sign"/>
@@ -119,8 +119,8 @@
                                 <script type="text/javascript">
                                     shibRedirectPage = '';
                                 </script>
-
-                                <script src="/resources/js/shib/idpselect_config.js" type="text/javascript" language="javascript"></script>
+                                
+                                <script src="/resources/js/shib/idpselect_config.js?version=1.0.0" type="text/javascript" language="javascript"></script>
 
                                 <script src="/resources/js/shib/idpselect.js" type="text/javascript" language="javascript"></script>
 
