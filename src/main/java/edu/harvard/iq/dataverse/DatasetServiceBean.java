@@ -42,7 +42,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.RandomStringUtils;
-import org.ocpsoft.common.util.Strings;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  *
@@ -618,6 +619,20 @@ public class DatasetServiceBean implements java.io.Serializable {
         
         return null;
     }
+    public static String join(final Collection<?> collection, final String delimiter)
+    {
+        StringBuffer buffer = new StringBuffer();
+        Iterator<?> iter = collection.iterator();
+        while (iter.hasNext())
+        {
+           buffer.append(iter.next());
+           if (iter.hasNext())
+           {
+              buffer.append(delimiter);
+           }
+        }
+        return buffer.toString();
+    }
     
     /**
      * Used to identify and properly display Harvested objects on the dataverse page.
@@ -630,7 +645,7 @@ public class DatasetServiceBean implements java.io.Serializable {
             return null;
         }
         
-        String datasetIdStr = Strings.join(datasetIds, ", ");
+        String datasetIdStr = join(datasetIds, ", ");
         
         String qstr = "SELECT d.id, h.archiveDescription FROM harvestingClient h, dataset d WHERE d.harvestingClient_id = h.id AND d.id IN (" + datasetIdStr + ")";
         List<Object[]> searchResults;

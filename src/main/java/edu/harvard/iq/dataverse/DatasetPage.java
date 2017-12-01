@@ -186,6 +186,8 @@ public class DatasetPage implements java.io.Serializable {
     ThumbnailServiceWrapper thumbnailServiceWrapper;
     @Inject
     SettingsWrapper settingsWrapper; 
+    @Inject
+    
 
 
     private Dataset dataset = new Dataset();

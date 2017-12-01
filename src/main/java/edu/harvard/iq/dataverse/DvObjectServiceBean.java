@@ -2,8 +2,10 @@ package edu.harvard.iq.dataverse;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +20,6 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.commons.lang.StringUtils;
-import org.ocpsoft.common.util.Strings;
 
 /**
  * Your goto bean for everything {@link DvObject}, that's not tied to any
@@ -182,6 +183,21 @@ public class DvObjectServiceBean implements java.io.Serializable {
         
     }
     
+        public static String join(final Collection<?> collection, final String delimiter)
+    {
+        StringBuffer buffer = new StringBuffer();
+        Iterator<?> iter = collection.iterator();
+        while (iter.hasNext())
+        {
+           buffer.append(iter.next());
+           if (iter.hasNext())
+           {
+              buffer.append(delimiter);
+           }
+        }
+        return buffer.toString();
+    }
+    
     /**
      * Used to calculate the dvObject tree paths for the search results on the
      * dataverse page. (In order to determine if "linked" or not).
@@ -195,7 +211,7 @@ public class DvObjectServiceBean implements java.io.Serializable {
             return null;
         }
         
-        String datasetIdStr = Strings.join(objectIds, ", ");
+        String datasetIdStr = join(objectIds, ", ");
         
         String qstr = "WITH RECURSIVE path_elements AS ((" +
             " SELECT id, owner_id FROM dvobject WHERE id in (" + datasetIdStr + "))" +

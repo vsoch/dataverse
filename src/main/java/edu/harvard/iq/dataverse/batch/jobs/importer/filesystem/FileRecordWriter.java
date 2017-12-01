@@ -61,7 +61,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
-import org.ocpsoft.common.util.Strings;
 
 @Named
 @Dependent
