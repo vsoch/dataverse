@@ -1,7 +1,11 @@
 package edu.harvard.iq.dataverse.metrics;
 
 import edu.harvard.iq.dataverse.util.json.JsonUtil;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -23,7 +27,7 @@ public class MetricsUtilTest {
     }
 
     @Test
-    public void testDataversesByCategoryToJson() {
+    public void testDataversesByCategoryToJson() throws InterruptedException {
         List<Object[]> list = new ArrayList<>();
         Object[] obj00 = {"RESEARCH_PROJECTS", 791l};
         Object[] obj01 = {"RESEARCHERS", 745l};
@@ -43,9 +47,19 @@ public class MetricsUtilTest {
         list.add(obj06);
         list.add(obj07);
         list.add(obj08);
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        Date date = new Date();
+        System.out.println("Before first" + dateFormat.format(date));
         JsonArrayBuilder jab = MetricsUtil.dataversesByCategoryToJson(list);
         JsonArray jsonArray = jab.build();
-        System.out.println(JsonUtil.prettyPrint(jsonArray));
+        date = new Date();
+        System.out.println("After first" + dateFormat.format(date));
+        jab = MetricsUtil.dataversesByCategoryToJson(list);
+        jsonArray = jab.build();
+        date = new Date();
+        System.out.println("After second" + dateFormat.format(date));
+        //System.out.println(JsonUtil.prettyPrint(jsonArray));
         JsonObject jsonObject = jsonArray.getJsonObject(8);
         assertEquals("Department", jsonObject.getString("category"));
         assertEquals(7, jsonObject.getInt("count"));

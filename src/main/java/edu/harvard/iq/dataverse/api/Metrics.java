@@ -10,7 +10,7 @@ public class Metrics extends AbstractApiBean {
 
     @GET
     @Path("dataverses/byCategory")
-    public Response getDataversesByCategory() {
+    public Response getDataversesByCategory() throws InterruptedException {
         return allowCors(ok(metricsSvc.dataversesByCategory()));
     }
 

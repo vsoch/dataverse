@@ -18,7 +18,7 @@ public class MetricsServiceBean implements Serializable {
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     private EntityManager em;
 
-    public JsonArrayBuilder dataversesByCategory() {
+    public JsonArrayBuilder dataversesByCategory() throws InterruptedException {
         Query query = em.createNativeQuery(""
                 + "select dataversetype, count(dataversetype) from dataverse\n"
                 + "join dvobject on dvobject.id = dataverse.id\n"

@@ -3,6 +3,7 @@ package edu.harvard.iq.dataverse.metrics;
 import edu.harvard.iq.dataverse.Dataverse;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.cache.annotation.CacheResult;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -21,8 +22,10 @@ public class MetricsUtil {
         return job;
     }
 
-    static JsonArrayBuilder dataversesByCategoryToJson(List<Object[]> listOfObjectArrays) {
+    @CacheResult
+    static JsonArrayBuilder dataversesByCategoryToJson(List<Object[]> listOfObjectArrays) throws InterruptedException {
         JsonArrayBuilder jab = Json.createArrayBuilder();
+        Thread.sleep(10000);
         for (Object[] arrayOfObjects : listOfObjectArrays) {
             JsonObjectBuilder job = Json.createObjectBuilder();
             String categoryNameUppercase = (String) arrayOfObjects[0];
