@@ -1097,12 +1097,21 @@ public class EditDatafilesPage implements java.io.Serializable {
 
         
         if(systemConfig.isProvCollectionEnabled()) {
-            Boolean provChanges = provPopupFragmentBean.updatePageMetadatasWithProvFreeform(fileMetadatas);
-            if(datasetUpdateRequired == false) {
-                datasetUpdateRequired = provChanges;
-            }
+            Boolean provFreeChanges = provPopupFragmentBean.updatePageMetadatasWithProvFreeform(fileMetadatas);
+
+//MAD: I'm not sure this is right. Why am I doing this if there is a flow below that says it should be able to pull out the changes?
+//            if(datasetUpdateRequired == false) {
+//                datasetUpdateRequired = provChanges;
+//            }
         }
-        Boolean provSaveContext = !datasetUpdateRequired; //need to track whether save happened here for later prov saving
+        
+        //MAD: I think what is happening is that this page is that save is already triggered above when freeform is saved
+        //  so when ts goes to shis goes to save again it blows up
+        //If datasetUpdateRequired, no need to save prov json
+        //If going through the metadata, also no need to save
+        
+        
+
         
         if (workingVersion.getId() == null  || datasetUpdateRequired) {
             logger.fine("issuing the dataset update command");
@@ -1266,17 +1275,20 @@ public class EditDatafilesPage implements java.io.Serializable {
                 
         workingVersion = dataset.getEditVersion();
         logger.fine("working version id: "+workingVersion.getId());
-
-        if(systemConfig.isProvCollectionEnabled()) {        
+        
+        //I'm going to try updating my code instead...
+        Boolean provJsonChanges = false; //MAD: THIS ISN'T BEHIND systemconfig, but that may just be how it is.
+        if(systemConfig.isProvCollectionEnabled()) {     
+            provPopupFragmentBean.updateProvChangesWithMetadata(fileMetadatas);
             try {
-                //If datasetUpdateRequired did not trigger save the prov code will need to save its staged changes.
-                provPopupFragmentBean.saveStagedProvJson(mode != FileEditMode.UPLOAD); //If not uploading prov needs to save context to save entityId which is a dataFile attribute
+                //If datasetUpdateRequired did not trigger save the prov code will need to save its staged changes. THIS IS WRONG SAVING STILL HAPPENS
+//MAD: WITH THIS TRUE I'M NOT SURE DATASET UPDATE ACTION WILL WORK RIGHT EITHER.
+                provJsonChanges = provPopupFragmentBean.saveStagedProvJson(true); //If not uploading prov needs to save context to save entityId which is a dataFile attribute
             } catch (AbstractApiBean.WrappedResponse ex) {
                 JsfHelper.addErrorMessage(getBundleString("file.metadataTab.provenance.error"));
                 Logger.getLogger(EditDatafilesPage.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
         
         
         if (mode == FileEditMode.SINGLE){

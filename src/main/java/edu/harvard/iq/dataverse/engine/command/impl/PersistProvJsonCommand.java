@@ -81,8 +81,7 @@ public class PersistProvJsonCommand extends AbstractCommand<DataFile> {
             String error = "Exception caught persisting PROV-JSON: " + ex;
             throw new IllegalCommandException(error, this);
         }
-        
-        
+
         dataFile.setProvEntityName(entityName);
         if(saveContext) {
             dataFile = ctxt.files().save(dataFile);

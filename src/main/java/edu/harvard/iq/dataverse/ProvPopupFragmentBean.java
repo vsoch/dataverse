@@ -253,7 +253,8 @@ public class ProvPopupFragmentBean extends AbstractApiBean implements java.io.Se
         JsfHelper.addSuccessMessage(message); //We have to call this after to ensure it is the success message shown
     }
     
-    public void saveStagedProvJson(boolean saveContext) throws AbstractApiBean.WrappedResponse {
+    public boolean saveStagedProvJson(boolean saveContext) throws AbstractApiBean.WrappedResponse {
+        boolean provJsonChanges = false;
         for (Map.Entry<String, UpdatesEntry> m : provenanceUpdates.entrySet()) {
             UpdatesEntry mapEntry = m.getValue();
             DataFile df = mapEntry.dataFile;
@@ -261,12 +262,15 @@ public class ProvPopupFragmentBean extends AbstractApiBean implements java.io.Se
 
             if(mapEntry.deleteJson) {
                 df = execCommand(new DeleteProvJsonCommand(dvRequestService.getDataverseRequest(), df, saveContext));
+                provJsonChanges = true;
             } else if(null != provString) {
                 df = execCommand(new PersistProvJsonCommand(dvRequestService.getDataverseRequest(), df, provString, df.getProvEntityName(), saveContext));
+                provJsonChanges = true;
             } 
             mapEntry.dataFile = df;
             provenanceUpdates.put(mapEntry.dataFile.getChecksumValue(), mapEntry); //Updates the datafile to the latest.
         }
+        return provJsonChanges;
     }
     
     public void saveStageProvFreeformToLatestVersion() {
@@ -288,8 +292,40 @@ public class ProvPopupFragmentBean extends AbstractApiBean implements java.io.Se
                 changes = true;
             }
         }
+        
         return changes;
     }
+    
+    //Called by editFilesPage to update the provPopup data with update fileMetadatas
+    void updateProvChangesWithMetadata(List<FileMetadata> fileMetadatas) {
+        for(FileMetadata fm : fileMetadatas) {
+
+            //This map uses ChecksumValue as the key. Tried storageIdentifier but that value switches during publication
+            UpdatesEntry ue = provenanceUpdates.get(fm.getDataFile().getChecksumValue());
+            if(null != ue && null != fm.getDataFile()) {
+                ue.dataFile = fm.getDataFile();
+            }
+        }
+
+
+//        for (Map.Entry<String, UpdatesEntry> m : provenanceUpdates.entrySet()) {
+//            UpdatesEntry mapEntry = m.getValue();
+//            DataFile df = mapEntry.dataFile;
+//            String provString = mapEntry.provJson;
+//
+//            if(mapEntry.deleteJson) {
+//                df = execCommand(new DeleteProvJsonCommand(dvRequestService.getDataverseRequest(), df, saveContext));
+//                provJsonChanges = true;
+//            } else if(null != provString) {
+//                df = execCommand(new PersistProvJsonCommand(dvRequestService.getDataverseRequest(), df, provString, df.getProvEntityName(), saveContext));
+//                provJsonChanges = true;
+//            } 
+//            mapEntry.dataFile = df;
+//            provenanceUpdates.put(mapEntry.dataFile.getChecksumValue(), mapEntry); //Updates the datafile to the latest.
+//        }
+
+    }
+    
 
     //This is used both to trigger delete of json and to clear the popup before closing it.
     //setting delete to true for the popup closing is ok because we re-set it to false on open every time.
@@ -401,6 +437,8 @@ public class ProvPopupFragmentBean extends AbstractApiBean implements java.io.Se
     public ProvEntityFileData getEntityByEntityName(String entityName) {
         return provJsonParsedEntities.get(entityName);
     }
+
+
     
      //for storing datafile and provjson in a map value
     class UpdatesEntry {
