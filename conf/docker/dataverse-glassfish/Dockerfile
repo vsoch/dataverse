@@ -7,7 +7,6 @@ COPY default.config /tmp
 COPY dvinstall.zip /tmp
 
 # Install dependencies
-#RUN yum install -y unzip
 RUN yum install -y \
     cronie \
     git \
